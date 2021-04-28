@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+
+  maven:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    links:
+      - db
+
+
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: app42
+      MYSQL_DATABASE: db
+      MYSQL_USER: app42
+      MYSQL_PASSWORD: app42
+    ports:
+      - "8514:8514"
+    volumes:
+      - ${PWD}/mariadb:/var/lib/mysql
