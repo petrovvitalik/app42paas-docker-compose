@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3"
 
 services:
 
@@ -8,18 +8,27 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    links:
-      - db
+    networks:
+      - backend
 
 
   db:
-    image: mariadb:latest
+    image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: app42
       MYSQL_DATABASE: db
       MYSQL_USER: app42
       MYSQL_PASSWORD: app42
+    healthcheck:
+      test: mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD -e 'SHOW DATABASES;'
+      timeout: 5s
+      retries: 5
     ports:
       - "8514:8514"
     volumes:
-      - ${PWD}/mariadb:/var/lib/mysql
+      - ${PWD}/mysql:/var/lib/mysql
+    networks:
+      - backend
+      
+networks:
+  backend:
